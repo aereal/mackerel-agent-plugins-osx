@@ -1,6 +1,6 @@
 # mackerel-plugin-osx-battery
 
-(TBD)
+![preview](preview.png)
 
 ## Requirements
 
