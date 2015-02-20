@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+
+MAX_CAPACITY_METRIC = {
+  name: 'max_capacity',
+  label: 'Max Capacity (mAh)',
+}
+
+def MAX_CAPACITY_METRIC.metric_value
+  line = sp_power_data_type.find {|l| /Capacity/ === l } or return '0'
+  m = line.match(/(\d+)$/)
+  m && m[1]
+end
+
+CHARGE_REMAINING_METRIC = {
+    name: 'charge_remaining',
+    label: 'Charge Remaining (mAh)',
+}
+
+def CHARGE_REMAINING_METRIC.metric_value
+  line = sp_power_data_type.find {|l| /Charge Remaining/ === l } or return '0'
+  m = line.match(/(\d+)\z/)
+  m && m[1]
+end
+
+CYCLE_COUNT_METRIC = {
+    name: 'cycle_count',
+    label: 'Cycle Count',
+}
+
+def CYCLE_COUNT_METRIC.metric_value
+  line = sp_power_data_type.find {|l| /Cycle Count/ === l } or return '0'
+  m = line.match(/(\d+)\z/)
+  m && m[1]
+end
+
+META = {
+  graphs: {
+    'osx.battery' => {
+      label: 'MacBook battery health',
+      unit: 'integer',
+      metrics: [
+        MAX_CAPACITY_METRIC,
+        CHARGE_REMAINING_METRIC,
+        CYCLE_COUNT_METRIC,
+      ],
+    },
+  }
+}
+
+def sp_power_data_type
+  $_out ||= `system_profiler SPPowerDataType`.each_line.map(&:strip) # XXX
+end
+
+def output_meta
+  require 'json'
+  puts '# mackerel-agent-plugin'
+  puts META.to_json
+end
+
+def output_metric(k, v)
+  puts [k, v, Time.now.to_i].join("\t")
+end
+
+def should_output_meta?
+  ENV['MACKEREL_AGENT_PLUGIN_META'] == '1'
+end
+
+if should_output_meta?
+  output_meta
+else
+  META[:graphs].each_pair do |name, graph_def|
+    graph_def[:metrics].each do |metric|
+      output_metric [name, metric[:name]].join('.'), metric.metric_value
+    end
+  end
+end
