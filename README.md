@@ -1,11 +1,7 @@
-# mackerel-agent-plugins-osx
+# mackerel-plugin-osx-battery
 
-**Unofficial** mackerel-agent plugins for Mac OS X.
+![preview](preview.png)
 
-## See Also
+## Requirements
 
-* [mackerelio]
-* [mackerel-agent]
-
-[mackerelio]: https://mackerel.io/
-[mackerel-agent]: https://github.com/mackerelio/mackerel-agent
+* Ruby (system)
