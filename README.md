@@ -1,4 +1,4 @@
-# mackerel-plugin-osx-battery
+# mackerel-plugin-macbook-battery-health
 
 ![preview](preview.png)
 
