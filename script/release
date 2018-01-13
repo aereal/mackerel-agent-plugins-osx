@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+TAR="${TAR:-tar}"
+ref="$1" # HEAD or tag
+prefix_path="pkg"
+version="$(git describe --tags --always $ref)"
+
+echo "---> Create release for $version" >&2
+git archive --prefix "${prefix_path}-${version}/" --format=tar "$ref" | "$TAR" -C . -xf -
