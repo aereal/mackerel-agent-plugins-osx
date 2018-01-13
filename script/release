@@ -5,10 +5,12 @@ set -e
 TAR="${TAR:-tar}"
 ref="$1" # HEAD or tag
 prefix_path="pkg"
+os="darwin"
+arch="amd64"
 package='mackerel-plugin-macbook-battery-health'
 version="$(git describe --abbrev=0 --tags --always $ref)"
 src_path="${prefix_path}-${version}/"
-archive_path="${package}-${version}.tar.bz2"
+archive_path="${package}_${os}_${arch}.tar.bz2"
 
 echo "---> Create release for $version" >&2
 git archive --prefix "$src_path" --format=tar "$ref" | "$TAR" -C . -xf -
